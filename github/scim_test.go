@@ -389,3 +389,154 @@ func TestSCIMUserAttributes_Marshal(t *testing.T) {
 
 	testJSONMarshal(t, u, want)
 }
+
+func TestUpdateAttributeForSCIMUserOperations_Marshal(t *testing.T) {
+	testJSONMarshal(t, &UpdateAttributeForSCIMUserOperations{}, `{}`)
+
+	u := &UpdateAttributeForSCIMUserOperations{
+		Op:   "TestOp",
+		Path: String("path"),
+	}
+
+	want := `{
+		"op": "TestOp",
+		"path": "path"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestUpdateAttributeForSCIMUserOptions_Marshal(t *testing.T) {
+	testJSONMarshal(t, &UpdateAttributeForSCIMUserOptions{}, `{}`)
+
+	u := &UpdateAttributeForSCIMUserOptions{
+		Schemas: []string{"test", "schema"},
+		Operations: UpdateAttributeForSCIMUserOperations{
+			Op:   "TestOp",
+			Path: String("path"),
+		},
+	}
+
+	want := `{
+		"schemas": ["test", "schema"],
+		"operations": {
+			"op": "TestOp",
+			"path": "path"
+		}
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestListSCIMProvisionedIdentitiesOptions_Marshal(t *testing.T) {
+	testJSONMarshal(t, &ListSCIMProvisionedIdentitiesOptions{}, `{}`)
+
+	u := &ListSCIMProvisionedIdentitiesOptions{
+		StartIndex: Int(1),
+		Count:      Int(10),
+		Filter:     String("test"),
+	}
+
+	want := `{
+		"startIndex": 1,
+		"count": 10,
+	 	"filter": "test"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestSCIMUserName_Marshal(t *testing.T) {
+	testJSONMarshal(t, &SCIMUserName{}, `{
+		"givenName":"","familyName":""
+	}`)
+
+	u := &SCIMUserName{
+		GivenName:  "Name1",
+		FamilyName: "Fname",
+		Formatted:  String("formatted name"),
+	}
+
+	want := `{
+			"givenName": "Name1",
+			"familyName": "Fname",
+			"formatted": "formatted name"	
+	}`
+	testJSONMarshal(t, u, want)
+}
+
+func TestSCIMMeta_Marshal(t *testing.T) {
+	testJSONMarshal(t, &SCIMMeta{}, `{}`)
+
+	u := &SCIMMeta{
+		ResourceType: String("test"),
+		Location:     String("test"),
+	}
+
+	want := `{
+		"resourceType": "test",
+		"location": "test"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestSCIMProvisionedIdentities_Marshal(t *testing.T) {
+	testJSONMarshal(t, &SCIMProvisionedIdentities{}, `{}`)
+
+	u := &SCIMProvisionedIdentities{
+		Schemas:      []string{"test", "schema"},
+		TotalResults: Int(1),
+		ItemsPerPage: Int(2),
+		StartIndex:   Int(1),
+		Resources: []*SCIMUserAttributes{
+			{
+				UserName: "SCIM",
+				Name: SCIMUserName{
+					GivenName:  "scim",
+					FamilyName: "test",
+					Formatted:  String("SCIM"),
+				},
+				DisplayName: String("Test SCIM"),
+				Emails: []*SCIMUserEmail{
+					{
+						Value:   "test",
+						Primary: Bool(true),
+						Type:    String("test"),
+					},
+				},
+				Schemas:    []string{"schema1"},
+				ExternalID: String("id"),
+				Groups:     []string{"group1"},
+				Active:     Bool(true),
+			},
+		},
+	}
+
+	want := `{
+		"schemas": ["test", "schema"],
+		"totalResults": 1,
+		"itemsPerPage": 2,
+		"startIndex": 1,
+		"Resources": [{
+			"userName": "SCIM",
+			"name": {
+				"givenName": "scim",
+				"familyName": "test",
+				"formatted": "SCIM"
+			},
+			"displayName": "Test SCIM",
+			"emails": [{
+				"value": "test",
+				"primary": true,
+				"type": "test"
+			}],
+			"schemas": ["schema1"],
+			"externalId": "id",
+			"groups": ["group1"],
+			"active": true
+		}]
+	}`
+
+	testJSONMarshal(t, u, want)
+}

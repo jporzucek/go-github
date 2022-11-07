@@ -876,3 +876,134 @@ func TestIssuesSearchResult_Marshal(t *testing.T) {
 
 	testJSONMarshal(t, u, want)
 }
+
+func TestLabelsSearchResult_Marshal(t *testing.T) {
+	testJSONMarshal(t, &LabelsSearchResult{}, "{}")
+
+	u := &LabelsSearchResult{
+		Total:             Int(5),
+		IncompleteResults: Bool(false),
+		Labels: []*LabelResult{
+			{
+				ID:          Int64(1),
+				URL:         String("https://www.test-url.com"),
+				Name:        String("test name"),
+				Color:       String("green"),
+				Default:     Bool(true),
+				Description: String("testDescription"),
+				Score:       Float64(1),
+			},
+		},
+	}
+
+	want := `{
+		"total_count": 5,
+		"incomplete_results": false,
+		"items": [
+			{
+				"id": 1,
+				"url": "https://www.test-url.com",
+				"name": "test name",
+				"color": "green",
+				"default": true,
+				"description": "testDescription",
+				"score": 1
+			}
+		]
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestCommitResult_Marshal(t *testing.T) {
+	testJSONMarshal(t, &CommitResult{}, "{}")
+
+	c := &CommitResult{
+		SHA:         String("test"),
+		HTMLURL:     String("hurl"),
+		CommentsURL: String("curl"),
+		URL:         String("url"),
+		Repository:  &Repository{ID: Int64(1)},
+		Score:       Float64(123),
+		Commit:      &Commit{SHA: String("test")},
+		Author:      &User{ID: Int64(1)},
+		Committer:   &User{ID: Int64(1)},
+		Parents:     []*Commit{},
+	}
+
+	want := `{
+		"sha": "test",
+		"commit": {
+		   "sha": "test"
+		},
+		"author": {
+		   "id": 1
+		},
+		"committer": {
+		   "id": 1
+		},
+		"html_url": "hurl",
+		"url": "url",
+		"comments_url": "curl",
+		"repository": {
+		   "id": 1
+		},
+		"score": 123
+	 }`
+
+	testJSONMarshal(t, c, want)
+}
+
+func TestUsersSearchResult_Marshal(t *testing.T) {
+	testJSONMarshal(t, &UsersSearchResult{}, "{}")
+
+	u := &UsersSearchResult{
+		Total:             Int(2),
+		IncompleteResults: Bool(false),
+		Users: []*User{{
+			Login:      String("loginTest"),
+			ID:         Int64(1),
+			NodeID:     String("NodeTest"),
+			AvatarURL:  String("AvatarURLTest"),
+			HTMLURL:    String("Hurl"),
+			GravatarID: String("gravatarIDTest"),
+			Name:       String("nameTest"),
+		}},
+	}
+
+	want := `{
+		"total_count": 2,
+		"incomplete_results": false,
+		"items": [
+		   {
+			  "login": "loginTest",
+			  "id": 1,
+			  "node_id": "NodeTest",
+			  "avatar_url": "AvatarURLTest",
+			  "html_url": "Hurl",
+			  "gravatar_id": "gravatarIDTest",
+			  "name": "nameTest"
+		   }
+		]
+	 }`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestCodeSearchResult_Marshal(t *testing.T) {
+	testJSONMarshal(t, &CodeSearchResult{}, "{}")
+
+	u := &CodeSearchResult{
+		Total:             Int(4),
+		IncompleteResults: Bool(false),
+		CodeResults:       []*CodeResult{{Name: String("n")}},
+	}
+
+	want := `{
+		"total_count" : 4,
+		"incomplete_results" : false,
+		"items" : [{"name": "n"}]
+	}`
+
+	testJSONMarshal(t, u, want)
+}
